@@ -53,5 +53,6 @@ runs:
       run: "nix copy --to ${{ env.NIX_CACHE_DIR }} --no-check-sigs ./#devShells.${{ env.NIX_OS }}.default"
       shell: bash
 
-    - run: uv cache prune --ci
+    - name: "Prune uv cache (optional)"
+      run: uv cache prune --ci || true
       shell: bash
