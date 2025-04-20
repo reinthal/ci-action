@@ -1,5 +1,5 @@
-name: 'CI Action'
-description: 'Set up Nix, direnv environment, and uv cache'
+name: "CI Action"
+description: "Set up Nix, direnv environment, and uv cache"
 
 inputs:
   github_access_token:
