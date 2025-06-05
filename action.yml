@@ -15,8 +15,8 @@ runs:
 
     - name: Set environment
       run: |
-        echo "NIX_CACHE_DIR=/tmp/nix-cache" >> "$GITHUB_ENV"
-        echo "UV_CACHE_DIR=/tmp/uv-cache" >> "$GITHUB_ENV"
+        echo "NIX_CACHE_DIR=/cache/nix-cache" >> "$GITHUB_ENV"
+        echo "UV_CACHE_DIR=/cache/uv-cache" >> "$GITHUB_ENV"
         echo "NIX_OS=$(nix eval --impure --raw --expr 'builtins.currentSystem')" >> "$GITHUB_ENV"
       shell: bash
 
