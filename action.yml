@@ -12,6 +12,8 @@ runs:
     - uses: cachix/install-nix-action@v30
       with:
         github_access_token: ${{ inputs.github_access_token }}
+        extra_nix_config: |
+          experimental-features = nix-command flakes
 
     - name: Set environment
       run: |
@@ -40,7 +42,7 @@ runs:
 
     - name: Direnv
       run: |
-        sudo apt-get install -y direnv
+        nix profile install nixpkgs#direnv
         direnv allow
         direnv exec . sh -c 'echo $PATH' > "$GITHUB_PATH"
         direnv export gha >> "$GITHUB_ENV"
