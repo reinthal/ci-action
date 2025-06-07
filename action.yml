@@ -9,16 +9,11 @@ runs:
   using: "composite"
 
   steps:
-    - uses: cachix/install-nix-action@v30
-      with:
-        github_access_token: ${{ inputs.github_access_token }}
-        extra_nix_config: |
-          experimental-features = nix-command flakes
 
     - name: Set environment
       run: |
-        echo "NIX_CACHE_DIR=/cache/nix-cache" >> "$GITHUB_ENV"
-        echo "UV_CACHE_DIR=/cache/uv-cache" >> "$GITHUB_ENV"
+        echo "NIX_CACHE_DIR=/tmp/nix-cache" >> "$GITHUB_ENV"
+        echo "UV_CACHE_DIR=/tmp/uv-cache" >> "$GITHUB_ENV"
         echo "NIX_OS=$(nix eval --impure --raw --expr 'builtins.currentSystem')" >> "$GITHUB_ENV"
       shell: bash
 
