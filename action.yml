@@ -15,9 +15,6 @@ runs:
         # Add Nix binaries to PATH for subsequent steps
         echo "/home/runner/.nix-profile/bin" >> $GITHUB_PATH
         echo "UV_CACHE_DIR=/tmp/uv-cache" >> "$GITHUB_ENV"
-        echo "PATH:"
-        echo $PATH
-        echo $GITHUB_PATH
       shell: bash
 
     - name: Restore uv cache
