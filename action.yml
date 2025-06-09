@@ -12,42 +12,25 @@ runs:
 
     - name: Set environment
       run: |
-        echo "NIX_CACHE_DIR=/tmp/nix-cache" >> "$GITHUB_ENV"
+        # Add Nix binaries to PATH for subsequent steps
+        echo "/nix/var/nix/profiles/default/bin" >> $GITHUB_PATH
+        echo "/home/runner/.nix-profile/bin" >> $GITHUB_PATH
         echo "UV_CACHE_DIR=/tmp/uv-cache" >> "$GITHUB_ENV"
-        echo "NIX_OS=$(nix eval --impure --raw --expr 'builtins.currentSystem')" >> "$GITHUB_ENV"
+        echo "Nix Version:"
+        nix --version
       shell: bash
-
-    - name: "Cache Nix store"
-      uses: actions/cache@v4
-      id: nix-cache
-      with:
-        path: ${{ env.NIX_CACHE_DIR }}
-        key: build-${{ env.NIX_OS }}-${{ hashFiles('flake.nix', 'flake.lock') }}
 
     - name: Restore uv cache
       uses: actions/cache@v4
       with:
         path: ${{ env.UV_CACHE_DIR }}
-        key: uv-${{ env.NIX_OS }}-${{ hashFiles('uv.lock') }}
+        key: uv-${{ hashFiles('flake.lock') }}-${{ hashFiles('uv.lock') }}
 
-    - name: "Import Nix store cache"
-      if: steps.nix-cache.outputs.cache-hit == 'true'
-      run: "nix copy --from ${{ env.NIX_CACHE_DIR }} --no-check-sigs ./#devShells.${{ env.NIX_OS }}.default"
-      shell: bash
-
-    - name: Direnv
+    - name: Direnv Initialization
       run: |
-        nix profile install nixpkgs#direnv
         direnv allow
         direnv exec . sh -c 'echo $PATH' > "$GITHUB_PATH"
         direnv export gha >> "$GITHUB_ENV"
-      shell: bash
-
-    - name: "Export Nix store cache"
-      if: steps.nix-cache.outputs.cache-hit != 'true'
-      # --no-check-sigs is required because the shell derivation is not signed
-      # it would be better to only copy shell inputs, but this is easier for now
-      run: "nix copy --to ${{ env.NIX_CACHE_DIR }} --no-check-sigs ./#devShells.${{ env.NIX_OS }}.default"
       shell: bash
 
     - name: "Prune uv cache (optional)"
